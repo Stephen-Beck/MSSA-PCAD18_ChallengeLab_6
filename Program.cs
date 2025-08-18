@@ -80,45 +80,82 @@ namespace ChallengeLab_6
             */
 
             int size = matrix.GetLength(0);
-            int size1 = size - 1;
+            //int size1 = size - 1;
 
-            for (int row = 0; row < (size / 2); row++)
+            //for (int row = 0; row < (size / 2); row++)
+            //{
+            //    for (int col = row; col < size1 - row; col++) // col = row so it works with inner "rings"
+            //    {
+            //        #region Original code, kind of hard to follow: swap element [row,col] in place three times via tuples to rotate through matrix
+
+            //        //(matrix[row, col], matrix[col, size1 - row]) = (matrix[col, size1 - row], matrix[row, col]);
+            //        //(matrix[row, col], matrix[size1 - row, size1 - col]) = (matrix[size1 - row, size1 - col], matrix[row, col]);
+            //        //(matrix[row, col], matrix[size1 - col, row]) = (matrix[size1 - col, row], matrix[row, col]);
+
+            //        #endregion
+
+            //        #region Refactored so it's easier to follow (and maybe better performance by not using tuples? unsure)
+            //        // set variables
+            //        int a = matrix[row, col];
+            //        int b = matrix[col, size1 - row];
+            //        int c = matrix[size1 - row, size1 - col];
+            //        int d = matrix[size1 - col, row];
+
+            //        // swap variables to "rotate matrix"
+            //        int temp = a;
+            //        a = d;
+            //        d = c;
+            //        c = b;
+            //        b = temp;
+
+            //        // reassign variables back to matrix
+            //        matrix[row, col] = a;
+            //        matrix[col, size1 - row] = b;
+            //        matrix[size1 - row, size1 - col] = c;
+            //        matrix[size1 - col, row] = d;
+            //        #endregion
+
+            //        // move to next col
+            //    }
+            //    // move to next row
+            //}
+
+
+            #region Transpose and Reverse
+            /* Transpose (swap rows and columns)
+            1 2 3     1 4 7     Row 1 = Col 1 (top-to-bottom)
+            4 5 6 --> 2 5 8     Row 2 = Col 2
+            7 8 9     3 6 9     Row 3 = Col 3
+            */
+            for (int row = 0; row < size; row++)
             {
-                for (int col = row; col < size1 - row; col++) // col = row so it works with inner "rings"
+                for (int col = row + 1; col < size; col++)
                 {
-                    #region Original code, kind of hard to follow: swap element [row,col] in place three times via tuples to rotate through matrix
-                    /*
-                    (matrix[row, col], matrix[col, size1 - row]) = (matrix[col, size1 - row], matrix[row, col]);
-                    (matrix[row, col], matrix[size1 - row, size1 - col]) = (matrix[size1 - row, size1 - col], matrix[row, col]);
-                    (matrix[row, col], matrix[size1 - col, row]) = (matrix[size1 - col, row], matrix[row, col]);
-                    */
-                    #endregion
-
-                    #region Refactored so it's easier to follow (and maybe better performance by not using tuples? unsure)
-                    // set variables
-                    int a = matrix[row, col];
-                    int b = matrix[col, size1 - row];
-                    int c = matrix[size1 - row, size1 - col];
-                    int d = matrix[size1 - col, row];
-
-                    // swap variables to "rotate matrix"
-                    int temp = a;
-                    a = d;
-                    d = c;
-                    c = b;
-                    b = temp;
-
-                    // reassign variables back to matrix
-                    matrix[row, col] = a;
-                    matrix[col, size1 - row] = b;
-                    matrix[size1 - row, size1 - col] = c;
-                    matrix[size1 - col, row] = d;
-                    #endregion
-
-                    // move to next col
+                    (matrix[row, col], matrix[col, row]) = (matrix[col, row], matrix[row, col]);
                 }
-                // move to next row
             }
+
+            /* Reverse (each row)
+            1 4 7     7 4 1
+            2 5 8 --> 8 5 2
+            3 6 9     9 6 3
+            */
+            for (int row = 0; row < size; row++)
+            {
+                for (int col = 0; col < size / 2; col++)
+                {
+                    int temp = matrix[row, col];
+                    matrix[row, col] = matrix[row, size - 1 - col];
+                    matrix[row, size - 1 - col] = temp;
+                }
+            }
+
+            /* The array is now rotated:
+            1 2 3     7 4 1
+            4 5 6 --> 8 5 2
+            7 8 9     9 6 3
+            */
+            #endregion
         }
 
         static void DisplayMatrix(int[,] matrix)
